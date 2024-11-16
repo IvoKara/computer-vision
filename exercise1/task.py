@@ -1,4 +1,5 @@
 import cv2 as cv
+from os import path
 
 # Global Defaults
 KERNEL_SIZE = 3
@@ -6,6 +7,7 @@ IMG_SOURCE = "data/forest.jpg"
 OUTPUT_IMAGE = "dist/output.png"
 DDEPTH = cv.CV_16S
 THRESHOLD_VALUE = 50
+# Thresold type 1: Binary Inverted
 THRESHOLD_TYPE = 1
 MAX_BINARY_VALUE = 255
 
@@ -14,7 +16,9 @@ destination = None
 
 
 def main():
-    source = cv.imread(cv.samples.findFile(IMG_SOURCE))
+    cwd = path.dirname(path.realpath(__file__))
+    img_path = path.join(cwd, IMG_SOURCE)
+    source = cv.imread(cv.samples.findFile(img_path))
     if source is None:
         print("Error opening image")
         return -1
@@ -47,7 +51,8 @@ def main():
     # Wait to press any key
     cv.waitKey(0)
 
-    cv.imwrite(OUTPUT_IMAGE, destination)
+    out_path = path.join(cwd, OUTPUT_IMAGE)
+    cv.imwrite(out_path, destination)
 
 
 if __name__ == "__main__":
