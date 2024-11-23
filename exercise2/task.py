@@ -93,7 +93,7 @@ def show_object_props(object_props):
         print()
 
 
-def get_object_props(contours):
+def get_object_props(contours, src):
     for contour in contours:
         # Compute center of the object (centroid)
         M = cv.moments(contour)
@@ -135,6 +135,11 @@ def get_object_props(contours):
         else:
             orientation = None
 
+        # Compute mean intensity of the object
+        mask = np.zeros(src.shape, dtype=np.uint8)
+        cv.drawContours(mask, [contour], -1, 255, thickness=-1)
+        mean_intensity = cv.mean(src, mask=mask)[0]
+
         yield {
             "center": [cx, cy],
             "aspect_ratio": aspect_ratio,
@@ -142,6 +147,7 @@ def get_object_props(contours):
             "solidity": solidity,
             "equivalent_diameter": equivalent_diameter,
             "orientation": orientation,
+            "mean_intensity": mean_intensity,
         }
 
 
@@ -169,7 +175,7 @@ def main(argv):
 
     contours, drawings = find_contours(canny_output, visualise=True)
 
-    object_props = get_object_props(contours)
+    object_props = get_object_props(contours, dest)
     show_object_props(object_props)
 
     show_output_message()
