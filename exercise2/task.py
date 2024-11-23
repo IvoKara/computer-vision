@@ -32,6 +32,14 @@ def load_input_image(image):
     return src
 
 
+def to_grayscale(src):
+    return cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+
+
+def to_blur(src, kernel_size=(3, 3)):
+    return cv.blur(src, kernel_size)
+
+
 def main(argv):
     # [load_image]
     # Check number of arguments
@@ -41,9 +49,14 @@ def main(argv):
         return -1
     # Load the image
     src = load_input_image(argv[0])
-    cv.waitKey()
+
+    # Convert image to gray and blur it
+    dest = to_grayscale(src)
+    dest = to_blur(dest)
+    show_image("Grayscale + Blur", dest)
 
     # canny_output = cv.Canny(src_gray, threshold, threshold * 2)
+    cv.waitKey()
 
 
 if __name__ == "__main__":
