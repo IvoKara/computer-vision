@@ -128,12 +128,20 @@ def get_object_props(contours):
         # Compute equivalent diameter
         equivalent_diameter = np.sqrt(4 * area / np.pi)
 
+        # Fit ellipse and compute orientation if applicable
+        if len(contour) >= 5:  # Need at least 5 points to fit an ellipse
+            ellipse = cv.fitEllipse(contour)
+            orientation = ellipse[2]
+        else:
+            orientation = None
+
         yield {
             "center": [cx, cy],
             "aspect_ratio": aspect_ratio,
             "extent": extent,
             "solidity": solidity,
             "equivalent_diameter": equivalent_diameter,
+            "orientation": orientation,
         }
 
 
