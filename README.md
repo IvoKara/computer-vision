@@ -2,14 +2,15 @@
 
 > _Collection of code samples for Computer Vision classes_ 👁️
 
-
 ## Prerequisite
+
 As I was developing the apps on Windows on WSL
 and using [`pipenv`](https://pipenv.pypa.io/en/latest/) as a virtualenv management tool, several steps are required to be accomplished:
 
 ### Installing `pipenv`
 
 As from Python 3.12 or Ubuntu 24.04 running simply `pip install` to install systemwide Python packages will result in throwing error of this kind:
+
 ```
 error: externally-managed-environment
 
@@ -20,6 +21,7 @@ error: externally-managed-environment
 ```
 
 The solution I took was to run:
+
 ```bash
 pip install pipenv --break-system-packages
 ```
@@ -33,6 +35,7 @@ sudo apt-get install x11-apps
 ```
 
 To test if everything is working fine run:
+
 ```bash
 xeyes
 ```
@@ -40,10 +43,12 @@ xeyes
 If not refer to this [StackOverflow questions](https://stackoverflow.com/questions/65939167/problem-using-opencv-in-wsl-when-opening-windows).
 
 ## Folder structure
+
 Every exercise is in its separate folder.
 
 Every "exercise" folder has the following structure:
-```
+
+```txt
 .
 ├── subtasks/
 │   ├── subtask1.py
@@ -56,7 +61,8 @@ Every "exercise" folder has the following structure:
 ├── task.py
 └── README.md
 ```
-* `data/` folder contains everything related to the exercise, for example pictures and images 
+
+* `data/` folder contains everything related to the exercise, for example pictures and images
 * `dist/` is the output folder for result - ignored by **Git**
 * `task.py` the main logic of the hands-on indepentent task
 * `__main__.py` itended to invoke `task.py` when called outside as a module
