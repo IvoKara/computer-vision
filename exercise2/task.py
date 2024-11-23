@@ -38,12 +38,24 @@ def to_blur(src, kernel_size=(3, 3)):
     return cv.blur(src, kernel_size)
 
 
-def find_contours(src, threshold):
-    canny_output = cv.Canny(src, threshold, threshold * 2)
+def to_canny(src, threshold):
+    return cv.Canny(src, threshold, threshold * 2)
 
-    contours, _ = cv.findContours(canny_output, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
-    return contours, canny_output
+def find_contours(canny_src, visualise=False):
+    contours, hierarchy = cv.findContours(
+        canny_src, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
+    )
+
+    if visualise:
+        drawing = np.zeros((canny_src.shape[0], canny_src.shape[1], 3), dtype=np.uint8)
+        for i in range(len(contours)):
+            color = (rng.randint(0, 256), rng.randint(0, 256), rng.randint(0, 256))
+            cv.drawContours(drawing, contours, i, color, 2, cv.LINE_8, hierarchy, 0)
+        # Show in a window
+        cv.imshow("Contours", drawing)
+
+    return contours
 
 def main(argv):
     # [load_image]
@@ -64,8 +76,10 @@ def main(argv):
     dest = to_blur(dest)
     show_image("Grayscale + Blur", dest)
 
-    contours, dest = find_contours(dest, threshold)
-    show_image("Canny", dest)
+    canny_output = to_canny(dest, threshold)
+    show_image("Canny", canny_output)
+
+    contours = find_contours(canny_output, visualise=True)
 
     cv.waitKey()
 
