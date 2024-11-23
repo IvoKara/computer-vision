@@ -12,7 +12,8 @@
 
 import sys
 import cv2 as cv
-from os import path
+import numpy as np
+import random as rng
 
 
 def show_image(window_name, src):
@@ -57,6 +58,24 @@ def find_contours(canny_src, visualise=False):
 
     return contours
 
+
+def show_object_props(object_props):
+    for index, props in enumerate(object_props, start=1):
+        print(f"Object {index}:")
+        for prop_name, prop_value in props.items():
+            print(f"  {prop_name}: {prop_value}")
+        print()
+
+
+def get_object_props(contours):
+    for contour in contours:
+        # Compute bounding rectangle
+        x, y, w, h = cv.boundingRect(contour)
+        aspect_ratio = w / h
+
+        yield {"aspect_ratio": aspect_ratio}
+
+
 def main(argv):
     # [load_image]
     # Check number of arguments
@@ -80,6 +99,9 @@ def main(argv):
     show_image("Canny", canny_output)
 
     contours = find_contours(canny_output, visualise=True)
+
+    object_props = get_object_props(contours)
+    show_object_props(object_props)
 
     cv.waitKey()
 
