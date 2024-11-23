@@ -27,8 +27,6 @@ def load_input_image(image):
     if src is None:
         print("Error opening image: " + image)
         exit(-1)
-    # Show source image
-    show_image("Source", src)
     return src
 
 
@@ -40,6 +38,13 @@ def to_blur(src, kernel_size=(3, 3)):
     return cv.blur(src, kernel_size)
 
 
+def find_contours(src, threshold):
+    canny_output = cv.Canny(src, threshold, threshold * 2)
+
+    contours, _ = cv.findContours(canny_output, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+
+    return contours, canny_output
+
 def main(argv):
     # [load_image]
     # Check number of arguments
@@ -49,6 +54,7 @@ def main(argv):
         return -1
     # Load the image
     src = load_input_image(argv[0])
+    show_image("Source", src)
 
     # Set the threshold
     threshold = 70 if len(argv) < 2 else int(argv[1])
@@ -58,8 +64,8 @@ def main(argv):
     dest = to_blur(dest)
     show_image("Grayscale + Blur", dest)
 
-    canny_output = cv.Canny(dest, threshold, threshold * 2)
-    show_image("Canny", canny_output)
+    contours, dest = find_contours(dest, threshold)
+    show_image("Canny", dest)
 
     cv.waitKey()
 
