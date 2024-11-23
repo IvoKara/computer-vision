@@ -120,7 +120,17 @@ def get_object_props(contours):
         rect_area = w * h
         extent = area / rect_area
 
-        yield {"center": [cx, cy], "aspect_ratio": aspect_ratio, "extent": extent}
+        # Compute convex hull and solidity (area / convex hull area)
+        hull = cv.convexHull(contour)
+        hull_area = cv.contourArea(hull)
+        solidity = area / hull_area if hull_area > 0 else 0
+
+        yield {
+            "center": [cx, cy],
+            "aspect_ratio": aspect_ratio,
+            "extent": extent,
+            "solidity": solidity,
+        }
 
 
 def main(argv):
