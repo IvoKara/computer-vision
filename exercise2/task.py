@@ -21,6 +21,30 @@ def show_image(window_name, src):
     cv.imshow(window_name, src)
 
 
+def show_output_message():
+    width, height = 800, 600  # Set the size of the window
+    text = (
+        "Open the terminal to see",
+        "the found object properties.",
+        "Press any key to finish.",
+    )
+    font = cv.FONT_HERSHEY_SIMPLEX
+    font_scale = 1
+    font_thickness = 2
+    text_color = (255, 255, 255)
+
+    x = 20
+    y = 50
+    background = np.zeros((height, width, 3), dtype=np.uint8)
+    for line in text:
+        cv.putText(
+            background, line, (x, y), font, font_scale, text_color, font_thickness
+        )
+        y += 50
+
+    show_image("Output", background)
+
+
 def load_input_image(image):
     # Load the image
     src = cv.imread(image, cv.IMREAD_COLOR)
@@ -103,6 +127,7 @@ def main(argv):
     object_props = get_object_props(contours)
     show_object_props(object_props)
 
+    show_output_message()
     cv.waitKey()
 
 
