@@ -95,12 +95,6 @@ def show_object_props(object_props):
 
 def get_object_props(contours):
     for contour in contours:
-        # Compute bounding rectangle
-        x, y, w, h = cv.boundingRect(contour)
-
-        # Compute aspect ratio
-        aspect_ratio = w / h
-
         # Compute center of the object (centroid)
         M = cv.moments(contour)
         if M["m00"] != 0:
@@ -109,7 +103,24 @@ def get_object_props(contours):
         else:
             cx, cy = None, None
 
-        yield {"center": (cx, cy), "aspect_ratio": aspect_ratio}
+        # Compute bounding rectangle
+        x, y, w, h = cv.boundingRect(contour)
+
+        # Compute aspect ratio
+        aspect_ratio = w / h
+
+        # Compute area and perimeter
+        area = cv.contourArea(contour)
+        perimeter = cv.arcLength(contour, True)
+
+        if area == 0:  # Avoid division by zero
+            continue
+
+        # Compute extent (area / bounding rectangle area)
+        rect_area = w * h
+        extent = area / rect_area
+
+        yield {"center": [cx, cy], "aspect_ratio": aspect_ratio, "extent": extent}
 
 
 def main(argv):
