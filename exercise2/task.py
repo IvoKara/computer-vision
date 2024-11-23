@@ -45,17 +45,22 @@ def main(argv):
     # Check number of arguments
     if len(argv) < 1:
         print("Not enough parameters")
-        print("Usage:\task.py < path_to_image >")
+        print("Usage:\task.py <path_to_image> [<threshold>]")
         return -1
     # Load the image
     src = load_input_image(argv[0])
+
+    # Set the threshold
+    threshold = 70 if len(argv) < 2 else int(argv[1])
 
     # Convert image to gray and blur it
     dest = to_grayscale(src)
     dest = to_blur(dest)
     show_image("Grayscale + Blur", dest)
 
-    # canny_output = cv.Canny(src_gray, threshold, threshold * 2)
+    canny_output = cv.Canny(dest, threshold, threshold * 2)
+    show_image("Canny", canny_output)
+
     cv.waitKey()
 
 
