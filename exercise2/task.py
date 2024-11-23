@@ -73,7 +73,7 @@ def main(argv):
 
     # Convert image to gray and blur it
     dest = to_grayscale(src)
-    dest = to_blur(dest)
+    # dest = to_blur(dest)
     show_image("Grayscale + Blur", dest)
 
     canny_output = to_canny(dest, threshold)
