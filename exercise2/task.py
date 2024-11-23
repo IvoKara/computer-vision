@@ -10,6 +10,7 @@
 * Mean Intensity
 """
 
+import json
 import sys
 import cv2 as cv
 import numpy as np
@@ -26,7 +27,8 @@ def show_output_message():
     text = (
         "Open the terminal to see",
         "the found object properties.",
-        "Press any key to finish.",
+        'See results in "dist" folder',
+        "Press Enter key to finish.",
     )
     font = cv.FONT_HERSHEY_SIMPLEX
     font_scale = 1
@@ -105,7 +107,7 @@ def main(argv):
     # Check number of arguments
     if len(argv) < 1:
         print("Not enough parameters")
-        print("Usage:\task.py <path_to_image> [<threshold>]")
+        print("Usage:\ntask.py <path_to_image> [<threshold>]")
         return -1
     # Load the image
     src = load_input_image(argv[0])
@@ -128,7 +130,15 @@ def main(argv):
     show_object_props(object_props)
 
     show_output_message()
-    cv.waitKey()
+
+    # if "Enter" key is pressed
+    # Save the contour image
+    # and the object props as json file
+    if cv.waitKey(0) == ord("\n"):
+        cv.imwrite("dist/coutours.png", contours)
+
+        with open("dist/object_props.json", "w"):
+            json.dump(list(object_props))
 
 
 if __name__ == "__main__":
