@@ -13,7 +13,6 @@
 import os
 import sys
 import json
-import sys
 import cv2 as cv
 import numpy as np
 import random as rng
@@ -98,9 +97,19 @@ def get_object_props(contours):
     for contour in contours:
         # Compute bounding rectangle
         x, y, w, h = cv.boundingRect(contour)
+
+        # Compute aspect ratio
         aspect_ratio = w / h
 
-        yield {"aspect_ratio": aspect_ratio}
+        # Compute center of the object (centroid)
+        M = cv.moments(contour)
+        if M["m00"] != 0:
+            cx = int(M["m10"] / M["m00"])
+            cy = int(M["m01"] / M["m00"])
+        else:
+            cx, cy = None, None
+
+        yield {"center": (cx, cy), "aspect_ratio": aspect_ratio}
 
 
 def main(argv):
