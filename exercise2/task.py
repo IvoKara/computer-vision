@@ -15,6 +15,11 @@ import cv2 as cv
 from os import path
 
 
+def show_image(window_name, src):
+    cv.namedWindow(window_name)
+    cv.imshow(window_name, src)
+
+
 def load_input_image(image):
     # Load the image
     src = cv.imread(image, cv.IMREAD_COLOR)
@@ -23,8 +28,7 @@ def load_input_image(image):
         print("Error opening image: " + image)
         exit(-1)
     # Show source image
-    cv.namedWindow("Source")
-    cv.imshow("Source", src)
+    show_image("Source", src)
     return src
 
 
