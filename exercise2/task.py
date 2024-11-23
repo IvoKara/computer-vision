@@ -125,11 +125,15 @@ def get_object_props(contours):
         hull_area = cv.contourArea(hull)
         solidity = area / hull_area if hull_area > 0 else 0
 
+        # Compute equivalent diameter
+        equivalent_diameter = np.sqrt(4 * area / np.pi)
+
         yield {
             "center": [cx, cy],
             "aspect_ratio": aspect_ratio,
             "extent": extent,
             "solidity": solidity,
+            "equivalent_diameter": equivalent_diameter,
         }
 
 
