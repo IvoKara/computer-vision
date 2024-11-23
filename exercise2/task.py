@@ -10,6 +10,8 @@
 * Mean Intensity
 """
 
+import os
+import sys
 import json
 import sys
 import cv2 as cv
@@ -27,11 +29,10 @@ def show_output_message():
     text = (
         "Open the terminal to see",
         "the found object properties.",
-        'See results in "dist" folder',
-        "Press Enter key to finish.",
+        'Press "s" key to save the results in "dist" folder.',
     )
     font = cv.FONT_HERSHEY_SIMPLEX
-    font_scale = 1
+    font_scale = 0.8
     font_thickness = 2
     text_color = (255, 255, 255)
 
@@ -82,7 +83,7 @@ def find_contours(canny_src, visualise=False):
         # Show in a window
         cv.imshow("Contours", drawing)
 
-    return contours
+    return contours, drawing
 
 
 def show_object_props(object_props):
@@ -124,21 +125,25 @@ def main(argv):
     canny_output = to_canny(dest, threshold)
     show_image("Canny", canny_output)
 
-    contours = find_contours(canny_output, visualise=True)
+    contours, drawings = find_contours(canny_output, visualise=True)
 
     object_props = get_object_props(contours)
     show_object_props(object_props)
 
     show_output_message()
 
-    # if "Enter" key is pressed
+    # if "s" key is pressed
     # Save the contour image
     # and the object props as json file
-    if cv.waitKey(0) == ord("\n"):
-        cv.imwrite("dist/coutours.png", contours)
+    if cv.waitKey(0) == ord("s"):
+        directory = "dist"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
-        with open("dist/object_props.json", "w"):
-            json.dump(list(object_props))
+        cv.imwrite(os.path.join(directory, "coutours.png"), drawings)
+
+        with open(os.path.join(directory, "object_props.json"), "w") as json_file:
+            json.dump(list(object_props), json_file)
 
 
 if __name__ == "__main__":
