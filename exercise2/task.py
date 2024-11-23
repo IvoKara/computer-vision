@@ -86,15 +86,17 @@ def find_contours(canny_src, visualise=False):
 
 
 def show_object_props(object_props):
-    for index, props in enumerate(object_props, start=1):
-        print(f"Object {index}:")
+    for obj_num, props in object_props.items():
+        print(obj_num)
         for prop_name, prop_value in props.items():
             print(f"  {prop_name}: {prop_value}")
         print()
 
 
 def get_object_props(contours, src):
-    for contour in contours:
+    object_props = {}
+
+    for count, contour in enumerate(contours, start=1):
         # Compute center of the object (centroid)
         M = cv.moments(contour)
         if M["m00"] != 0:
@@ -140,7 +142,7 @@ def get_object_props(contours, src):
         cv.drawContours(mask, [contour], -1, 255, thickness=-1)
         mean_intensity = cv.mean(src, mask=mask)[0]
 
-        yield {
+        object_props[f"Object_{count}"] = {
             "center": [cx, cy],
             "aspect_ratio": aspect_ratio,
             "extent": extent,
@@ -149,6 +151,8 @@ def get_object_props(contours, src):
             "orientation": orientation,
             "mean_intensity": mean_intensity,
         }
+
+    return object_props
 
 
 def main(argv):
@@ -191,7 +195,7 @@ def main(argv):
         cv.imwrite(os.path.join(directory, "coutours.png"), drawings)
 
         with open(os.path.join(directory, "object_props.json"), "w") as json_file:
-            json.dump(list(object_props), json_file)
+            json.dump(object_props, json_file)
 
 
 if __name__ == "__main__":
